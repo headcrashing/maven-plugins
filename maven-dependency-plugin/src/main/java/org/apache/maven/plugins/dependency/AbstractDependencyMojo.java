@@ -22,6 +22,7 @@ package org.apache.maven.plugins.dependency;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
 import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
@@ -42,7 +43,7 @@ import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
 import org.codehaus.plexus.components.io.fileselectors.IncludeExcludeFileSelector;
-import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.NioFiles;
 import org.codehaus.plexus.util.ReflectionUtils;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -178,7 +179,8 @@ public abstract class AbstractDependencyMojo
                     + "copy should be executed after packaging: see MDEP-187." );
             }
 
-            FileUtils.copyFile( artifact, destFile );
+            Files.createDirectories( destFile.getParentFile().toPath() );
+            NioFiles.copy( artifact, destFile );
         }
         catch ( IOException e )
         {
